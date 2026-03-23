@@ -1,0 +1,184 @@
+@page
+@model Project_management_tool_version1._1.Pages.Tickets.IndexModel
+@{
+    ViewData["Title"] = "Tickets";
+    var canEdit = User.IsInRole("Admin") || User.IsInRole("ProjectManager") || User.IsInRole("Developer") || User.IsInRole("QA");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Tickets</h2>
+    @if (canEdit)
+    {
+        <a asp-page="/Tickets/Create" class="btn btn-primary">Create Ticket</a>
+    }
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input name="Search" value="@Model.Search" class="form-control" placeholder="Search #, title, project" />
+    </div>
+    <div class="col-md-2">
+        <select name="Status" class="form-select">
+            <option value="">All statuses</option>
+            @foreach (var status in Model.AvailableStatuses)
+            {
+                <option value="@status" selected="@(Model.Status == status)">@status</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="Priority" class="form-select">
+            <option value="">All priorities</option>
+            @foreach (var priority in Model.AvailablePriorities)
+            {
+                <option value="@priority" selected="@(Model.Priority == priority)">@priority</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="Category" class="form-select">
+            <option value="">All categories</option>
+            @foreach (var category in Model.AvailableCategories)
+            {
+                <option value="@category" selected="@(Model.Category == category)">@category</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="Project" class="form-select">
+            <option value="">All projects</option>
+            @foreach (var project in Model.AvailableProjects)
+            {
+                <option value="@project" selected="@(Model.Project == project)">@project</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-1">
+        <select name="PageSize" class="form-select">
+            @foreach (var size in Model.PageSizeOptions)
+            {
+                <option value="@size" selected="@(Model.PageSize == size)">@size</option>
+            }
+        </select>
+    </div>
+
+    <div class="col-md-3">
+        <select name="SortBy" class="form-select">
+            <option value="TicketNumber" selected="@(Model.SortBy == "TicketNumber")">Sort: Ticket #</option>
+            <option value="Title" selected="@(Model.SortBy == "Title")">Sort: Title</option>
+            <option value="Project" selected="@(Model.SortBy == "Project")">Sort: Project</option>
+            <option value="Category" selected="@(Model.SortBy == "Category")">Sort: Category</option>
+            <option value="Priority" selected="@(Model.SortBy == "Priority")">Sort: Priority</option>
+            <option value="Status" selected="@(Model.SortBy == "Status")">Sort: Status</option>
+            <option value="DueDate" selected="@(Model.SortBy == "DueDate")">Sort: Due Date</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="SortDirection" class="form-select">
+            <option value="asc" selected="@(Model.SortDirection == "asc")">Ascending</option>
+            <option value="desc" selected="@(Model.SortDirection == "desc")">Descending</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+        <a asp-page="/Tickets/Index" class="btn btn-outline-secondary">Reset</a>
+    </div>
+</form>
+
+<div class="small text-muted mb-2">Showing @Model.Tickets.Count of @Model.TotalCount tickets</div>
+
+@if (!Model.Tickets.Any())
+{
+    <div class="alert alert-info">No tickets found.</div>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Ticket #</th>
+                <th>Title</th>
+                <th>Project</th>
+                <th>Category</th>
+                <th>Priority</th>
+                <th>Status</th>
+                <th>Due Date</th>
+                @if (canEdit)
+                {
+                    <th></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var ticket in Model.Tickets)
+        {
+            <tr>
+                <td>@ticket.TicketNumber</td>
+                <td>@ticket.Title</td>
+                <td>@ticket.Project?.Name</td>
+                <td>@ticket.Category</td>
+                <td>@ticket.Priority</td>
+                <td>@ticket.Status</td>
+                <td>@ticket.ExpectedDueDate</td>
+                @if (canEdit)
+                {
+                    <td class="text-nowrap">
+                        <a asp-page="/Tickets/Edit" asp-route-id="@ticket.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-page="/Tickets/Delete" asp-route-id="@ticket.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Tickets pagination">
+            <ul class="pagination">
+                <li class="page-item @(Model.Page <= 1 ? "disabled" : null)">
+                    <a class="page-link"
+                       asp-page="/Tickets/Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-Status="@Model.Status"
+                       asp-route-Priority="@Model.Priority"
+                       asp-route-Category="@Model.Category"
+                       asp-route-Project="@Model.Project"
+                       asp-route-SortBy="@Model.SortBy"
+                       asp-route-SortDirection="@Model.SortDirection"
+                       asp-route-PageSize="@Model.PageSize"
+                       asp-route-Page="@(Model.Page - 1)">Previous</a>
+                </li>
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.Page ? "active" : null)">
+                        <a class="page-link"
+                           asp-page="/Tickets/Index"
+                           asp-route-Search="@Model.Search"
+                           asp-route-Status="@Model.Status"
+                           asp-route-Priority="@Model.Priority"
+                           asp-route-Category="@Model.Category"
+                           asp-route-Project="@Model.Project"
+                           asp-route-SortBy="@Model.SortBy"
+                           asp-route-SortDirection="@Model.SortDirection"
+                           asp-route-PageSize="@Model.PageSize"
+                           asp-route-Page="@i">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : null)">
+                    <a class="page-link"
+                       asp-page="/Tickets/Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-Status="@Model.Status"
+                       asp-route-Priority="@Model.Priority"
+                       asp-route-Category="@Model.Category"
+                       asp-route-Project="@Model.Project"
+                       asp-route-SortBy="@Model.SortBy"
+                       asp-route-SortDirection="@Model.SortDirection"
+                       asp-route-PageSize="@Model.PageSize"
+                       asp-route-Page="@(Model.Page + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
+    }
+}

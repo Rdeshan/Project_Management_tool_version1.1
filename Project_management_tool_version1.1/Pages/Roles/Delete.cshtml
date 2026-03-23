@@ -1,0 +1,28 @@
+@page "{id:guid}"
+@model Project_management_tool_version1._1.Pages.Roles.DeleteModel
+@{
+    ViewData["Title"] = "Delete Role";
+}
+
+<h2 class="mb-3">Delete Role</h2>
+
+@if (Model.Role is null)
+{
+    <div class="alert alert-warning">Role not found.</div>
+}
+else
+{
+    <div class="alert alert-warning">
+        Are you sure you want to delete <strong>@Model.Role.Name</strong>?
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Description</dt>
+        <dd class="col-sm-9">@Model.Role.Description</dd>
+    </dl>
+
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-page="/Roles/Index" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+}

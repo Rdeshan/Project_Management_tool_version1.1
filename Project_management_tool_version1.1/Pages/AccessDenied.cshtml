@@ -1,0 +1,20 @@
+@page
+@model Project_management_tool_version1._1.Pages.AccessDeniedModel
+@{
+    ViewData["Title"] = "Access Denied";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card border-danger shadow-sm mt-3">
+            <div class="card-body p-4">
+                <h2 class="h4 text-danger mb-3">Access denied</h2>
+                <p class="mb-3">You are signed in, but you do not have permission to open this page.</p>
+                <div class="d-flex gap-2">
+                    <a asp-page="/Index" class="btn btn-primary">Go to Home</a>
+                    <a asp-page="/Auth/Login" class="btn btn-outline-secondary">Switch account</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

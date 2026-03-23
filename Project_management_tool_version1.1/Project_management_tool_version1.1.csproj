@@ -7,4 +7,16 @@
     <RootNamespace>Project_management_tool_version1._1</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Project_management_tool_version1.1.Application\Project_management_tool_version1.1.Application.csproj" />
+    <ProjectReference Include="..\Project_management_tool_version1.1.Infrastructure\Project_management_tool_version1.1.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
 </Project>
