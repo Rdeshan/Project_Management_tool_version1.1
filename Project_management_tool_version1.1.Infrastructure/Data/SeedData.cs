@@ -75,6 +75,7 @@ public static class SeedData
             new { RoleName = "ProjectManager", RoleDescription = "Project planning and execution", FirstName = "Priya", LastName = "Manager", Email = "pm@projecttool.local", Password = "ProjectManager@123" },
             new { RoleName = "Developer", RoleDescription = "Builds product features", FirstName = "Dev", LastName = "Engineer", Email = "dev@projecttool.local", Password = "Developer@123" },
             new { RoleName = "QA", RoleDescription = "Quality assurance", FirstName = "Quality", LastName = "Tester", Email = "qa@projecttool.local", Password = "Qa@123" },
+            new { RoleName = "BusinessAnalyst", RoleDescription = "Manages requirements and backlog", FirstName = "Business", LastName = "Analyst", Email = "ba@projecttool.local", Password = "BusinessAnalyst@123" },
             new { RoleName = "Viewer", RoleDescription = "Read-only project access", FirstName = "Read", LastName = "Only", Email = "viewer@projecttool.local", Password = "Viewer@123" }
         };
 

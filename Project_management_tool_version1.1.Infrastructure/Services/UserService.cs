@@ -110,6 +110,29 @@ public class UserService(ApplicationDbContext dbContext) : IUserService
         return candidate.PasswordHash == password ? candidate : null;
     }
 
+    public async Task<User?> GetActiveByEmailAsync(string email, CancellationToken cancellationToken = default)
+    {
+        var normalizedEmail = email.Trim().ToLowerInvariant();
+
+        return await dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Email == normalizedEmail && x.Status == UserStatus.Active, cancellationToken);
+    }
+
+    public async Task UpdatePasswordAsync(Guid userId, string newPasswordHash, CancellationToken cancellationToken = default)
+    {
+        var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId, cancellationToken);
+        if (user is null)
+        {
+            throw new InvalidOperationException("User was not found.");
+        }
+
+        user.PasswordHash = newPasswordHash;
+        user.UpdatedAtUtc = DateTime.UtcNow;
+
+        await dbContext.SaveChangesAsync(cancellationToken);
+    }
+
     public async Task<User?> GetActiveByRoleAsync(string roleName, CancellationToken cancellationToken = default)
     {
         var normalizedRoleName = roleName.Trim().ToLowerInvariant();

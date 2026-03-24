@@ -6,12 +6,19 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ProjectManagementTool.Application.Interfaces;
+using Project_management_tool_version1._1.Security;
 
 namespace Project_management_tool_version1._1.Pages.Auth;
 
-public class LoginModel(IUserService userService, IRoleService roleService, IWebHostEnvironment environment) : PageModel
+public class LoginModel(
+    IUserService userService,
+    IRoleService roleService,
+    IWebHostEnvironment environment,
+    LoginLockoutService loginLockoutService,
+    IAuthenticationSchemeProvider authenticationSchemeProvider) : PageModel
 {
     public IReadOnlyCollection<string> QuickRoles { get; private set; } = [];
+    public IReadOnlyCollection<string> ExternalProviders { get; private set; } = [];
 
     [BindProperty]
     public LoginInput Input { get; set; } = new();
@@ -37,24 +44,44 @@ public class LoginModel(IUserService userService, IRoleService roleService, IWeb
     public async Task OnGetAsync(CancellationToken cancellationToken)
     {
         await LoadQuickRolesAsync(cancellationToken);
+        await LoadExternalProvidersAsync();
     }
 
     public async Task<IActionResult> OnPostAsync(CancellationToken cancellationToken)
     {
         await LoadQuickRolesAsync(cancellationToken);
+        await LoadExternalProvidersAsync();
 
         if (!ModelState.IsValid)
         {
             return Page();
         }
 
-        var user = await userService.ValidateCredentialsAsync(Input.Email, Input.Password, cancellationToken);
-        if (user is null)
+        var normalizedEmail = Input.Email.Trim().ToLowerInvariant();
+        if (loginLockoutService.IsLockedOut(normalizedEmail, out var lockedRemaining))
         {
-            ModelState.AddModelError(string.Empty, "Invalid email or password.");
+            ModelState.AddModelError(string.Empty, $"Account temporarily locked. Try again in {Math.Ceiling(lockedRemaining.TotalMinutes)} minute(s).");
             return Page();
         }
 
+        var user = await userService.ValidateCredentialsAsync(Input.Email, Input.Password, cancellationToken);
+        if (user is null)
+        {
+            loginLockoutService.RecordFailure(normalizedEmail);
+
+            if (loginLockoutService.IsLockedOut(normalizedEmail, out lockedRemaining))
+            {
+                ModelState.AddModelError(string.Empty, $"Account temporarily locked. Try again in {Math.Ceiling(lockedRemaining.TotalMinutes)} minute(s).");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid email or password.");
+            }
+
+            return Page();
+        }
+
+        loginLockoutService.ClearFailures(normalizedEmail);
         await SignInUserAsync(user, cancellationToken);
         IsAuthenticated = true;
         AuthenticatedMessage = $"Login successful. Welcome {user.FirstName} {user.LastName}.";
@@ -64,6 +91,7 @@ public class LoginModel(IUserService userService, IRoleService roleService, IWeb
     public async Task<IActionResult> OnPostQuickLoginAsync(string roleName, CancellationToken cancellationToken)
     {
         await LoadQuickRolesAsync(cancellationToken);
+        await LoadExternalProvidersAsync();
 
         if (!IsDevelopment)
         {
@@ -83,6 +111,61 @@ public class LoginModel(IUserService userService, IRoleService roleService, IWeb
         return LocalRedirect(string.IsNullOrWhiteSpace(ReturnUrl) ? "/" : ReturnUrl);
     }
 
+    public async Task<IActionResult> OnPostExternalLoginAsync(string provider, string? returnUrl)
+    {
+        var redirectUrl = Url.Page("/Auth/Login", "ExternalLoginCallback", new { returnUrl });
+        var properties = new AuthenticationProperties
+        {
+            RedirectUri = redirectUrl
+        };
+
+        return Challenge(properties, provider);
+    }
+
+    public async Task<IActionResult> OnGetExternalLoginCallbackAsync(string? returnUrl, string? remoteError, CancellationToken cancellationToken)
+    {
+        ReturnUrl = returnUrl;
+        await LoadQuickRolesAsync(cancellationToken);
+        await LoadExternalProvidersAsync();
+
+        if (!string.IsNullOrWhiteSpace(remoteError))
+        {
+            ModelState.AddModelError(string.Empty, $"External authentication failed: {remoteError}");
+            return Page();
+        }
+
+        var externalAuthResult = await HttpContext.AuthenticateAsync("External");
+        if (!externalAuthResult.Succeeded || externalAuthResult.Principal is null)
+        {
+            ModelState.AddModelError(string.Empty, "External authentication failed.");
+            return Page();
+        }
+
+        var email = externalAuthResult.Principal.FindFirstValue(ClaimTypes.Email)
+            ?? externalAuthResult.Principal.FindFirstValue("email");
+
+        await HttpContext.SignOutAsync("External");
+
+        if (string.IsNullOrWhiteSpace(email))
+        {
+            ModelState.AddModelError(string.Empty, "Unable to read email from external login provider.");
+            return Page();
+        }
+
+        var user = await userService.GetActiveByEmailAsync(email, cancellationToken);
+        if (user is null)
+        {
+            ModelState.AddModelError(string.Empty, "No active account is linked to this external email.");
+            return Page();
+        }
+
+        await SignInUserAsync(user, cancellationToken);
+        IsAuthenticated = true;
+        AuthenticatedMessage = $"Login successful. Welcome {user.FirstName} {user.LastName}.";
+
+        return LocalRedirect(string.IsNullOrWhiteSpace(returnUrl) ? "/" : returnUrl);
+    }
+
     private async Task LoadQuickRolesAsync(CancellationToken cancellationToken)
     {
         if (!IsDevelopment)
@@ -93,6 +176,16 @@ public class LoginModel(IUserService userService, IRoleService roleService, IWeb
 
         QuickRoles = (await roleService.GetAllAsync(cancellationToken))
             .Select(x => x.Name)
+            .OrderBy(x => x)
+            .ToArray();
+    }
+
+    private async Task LoadExternalProvidersAsync()
+    {
+        ExternalProviders = (await authenticationSchemeProvider.GetAllSchemesAsync())
+            .Where(x => !string.IsNullOrWhiteSpace(x.DisplayName))
+            .Select(x => x.Name)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(x => x)
             .ToArray();
     }

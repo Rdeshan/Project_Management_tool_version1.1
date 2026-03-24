@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Project_management_tool_version1.1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+bf20bf6de7621b24f1f1e1f00493295d3243e49f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f63bc451cd7c12e1be858dc24222bc5cdb7848c9")]
 [assembly: System.Reflection.AssemblyProductAttribute("Project_management_tool_version1.1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Project_management_tool_version1.1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

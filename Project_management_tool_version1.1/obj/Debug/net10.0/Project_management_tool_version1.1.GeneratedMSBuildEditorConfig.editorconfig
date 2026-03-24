@@ -34,12 +34,20 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWNjZXNzRGVuaWVkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/deshr/source/repos/Project_management_tool_version1.1/Project_management_tool_version1.1/Pages/Auth/ForgotPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxGb3Jnb3RQYXNzd29yZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/deshr/source/repos/Project_management_tool_version1.1/Project_management_tool_version1.1/Pages/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/deshr/source/repos/Project_management_tool_version1.1/Project_management_tool_version1.1/Pages/Auth/Logout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxMb2dvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/deshr/source/repos/Project_management_tool_version1.1/Project_management_tool_version1.1/Pages/Auth/ResetPassword.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQXV0aFxSZXNldFBhc3N3b3JkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/deshr/source/repos/Project_management_tool_version1.1/Project_management_tool_version1.1/Pages/Delays/Index.cshtml]

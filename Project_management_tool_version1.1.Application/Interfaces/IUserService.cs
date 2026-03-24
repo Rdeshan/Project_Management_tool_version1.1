@@ -16,6 +16,8 @@ public interface IUserService
         CancellationToken cancellationToken = default);
     Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     Task<User?> ValidateCredentialsAsync(string email, string password, CancellationToken cancellationToken = default);
+    Task<User?> GetActiveByEmailAsync(string email, CancellationToken cancellationToken = default);
+    Task UpdatePasswordAsync(Guid userId, string newPasswordHash, CancellationToken cancellationToken = default);
     Task<User?> GetActiveByRoleAsync(string roleName, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<string>> GetRoleNamesAsync(Guid userId, CancellationToken cancellationToken = default);
     Task<IReadOnlyCollection<Guid>> GetRoleIdsAsync(Guid userId, CancellationToken cancellationToken = default);

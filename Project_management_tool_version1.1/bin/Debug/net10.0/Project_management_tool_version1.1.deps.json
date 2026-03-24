@@ -8,6 +8,8 @@
     ".NETCoreApp,Version=v10.0": {
       "Project_management_tool_version1.1/1.0.0": {
         "dependencies": {
+          "Microsoft.AspNetCore.Authentication.Google": "10.0.0",
+          "Microsoft.AspNetCore.Authentication.MicrosoftAccount": "10.0.0",
           "Microsoft.EntityFrameworkCore.Design": "10.0.0",
           "Project_management_tool_version1.1.Application": "1.0.0",
           "Project_management_tool_version1.1.Infrastructure": "1.0.0"
@@ -47,6 +49,22 @@
           "lib/net6.0/Humanizer.dll": {
             "assemblyVersion": "2.14.0.0",
             "fileVersion": "2.14.1.48190"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.Google/10.0.0": {
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Authentication.Google.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
+          }
+        }
+      },
+      "Microsoft.AspNetCore.Authentication.MicrosoftAccount/10.0.0": {
+        "runtime": {
+          "lib/net10.0/Microsoft.AspNetCore.Authentication.MicrosoftAccount.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.25.52411"
           }
         }
       },
@@ -932,6 +950,20 @@
       "sha512": "sha512-lQKvtaTDOXnoVJ20ibTuSIOf2i0uO0MPbDhd1jm238I+U/2ZnRENj0cktKZhtchBMtCUSRQ5v4xBCUbKNmyVMw==",
       "path": "humanizer.core/2.14.1",
       "hashPath": "humanizer.core.2.14.1.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.Google/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-EVpdUZGl7pVeJcQatS+yx5YE2x+lW9ZXO3iG6r9okTcE7XlEimBKW40n8BXk38/lfJ1lRcq4Hv3cWCj5cr32Kw==",
+      "path": "microsoft.aspnetcore.authentication.google/10.0.0",
+      "hashPath": "microsoft.aspnetcore.authentication.google.10.0.0.nupkg.sha512"
+    },
+    "Microsoft.AspNetCore.Authentication.MicrosoftAccount/10.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-MSHLviq/fK2+HVyPSdsTk2G5To9fMk8iGyW44jrwSwEb9/zZKUbi5DLjiTySjYYAaiRHZw2Uydqv9A7KdlLhdg==",
+      "path": "microsoft.aspnetcore.authentication.microsoftaccount/10.0.0",
+      "hashPath": "microsoft.aspnetcore.authentication.microsoftaccount.10.0.0.nupkg.sha512"
     },
     "Microsoft.Bcl.AsyncInterfaces/8.0.0": {
       "type": "package",
