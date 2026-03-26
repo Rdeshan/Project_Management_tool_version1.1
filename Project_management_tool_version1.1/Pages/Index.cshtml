@@ -1,10 +1,84 @@
 ﻿@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Dashboard";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-5">Project Dashboard</h1>
+    <p class="text-muted">Overview of portfolio and delivery status.</p>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-title">Projects</h6>
+                <p class="display-6">@Model.ProjectCount</p>
+                <a asp-page="/Projects/Index" class="btn btn-sm btn-outline-primary">View</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-title">Products</h6>
+                <p class="display-6">@Model.ProductCount</p>
+                <a asp-page="/Products/Index" class="btn btn-sm btn-outline-primary">View</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-title">SubProjects</h6>
+                <p class="display-6">@Model.SubProjectCount</p>
+                <a asp-page="/SubProjects/Index" class="btn btn-sm btn-outline-primary">View</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h6 class="card-title">Tickets</h6>
+                <p class="display-6">@Model.TicketCount</p>
+                <a asp-page="/Tickets/Index" class="btn btn-sm btn-outline-primary">View</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-3">
+        <div class="card border-secondary text-center">
+            <div class="card-body">
+                <h6 class="card-title">Open / Not Started</h6>
+                <p class="display-6 mb-0">@Model.OpenTicketCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-info text-center">
+            <div class="card-body">
+                <h6 class="card-title">Active</h6>
+                <p class="display-6 mb-0">@Model.ActiveTicketCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-success text-center">
+            <div class="card-body">
+                <h6 class="card-title">Completed / Closed</h6>
+                <p class="display-6 mb-0">@Model.CompletedTicketCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-danger text-center">
+            <div class="card-body">
+                <h6 class="card-title">Overdue</h6>
+                <p class="display-6 mb-0">@Model.OverdueTicketCount</p>
+            </div>
+        </div>
+    </div>
 </div>

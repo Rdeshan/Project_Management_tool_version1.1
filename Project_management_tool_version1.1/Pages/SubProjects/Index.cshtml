@@ -1,0 +1,150 @@
+@page
+@model Project_management_tool_version1._1.Pages.SubProjects.IndexModel
+@{
+    ViewData["Title"] = "SubProjects";
+    var canEdit = User.IsInRole("Admin") || User.IsInRole("ProjectManager") || User.IsInRole("Developer") || User.IsInRole("QA");
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">SubProjects</h2>
+    @if (canEdit)
+    {
+        <a asp-page="/SubProjects/Create" class="btn btn-primary">Create SubProject</a>
+    }
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input name="Search" value="@Model.Search" class="form-control" placeholder="Search name, owner, product" />
+    </div>
+    <div class="col-md-2">
+        <select name="Status" class="form-select">
+            <option value="">All statuses</option>
+            @foreach (var status in Model.AvailableStatuses)
+            {
+                <option value="@status" selected="@(Model.Status == status)">@status</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="Product" class="form-select">
+            <option value="">All products</option>
+            @foreach (var product in Model.AvailableProducts)
+            {
+                <option value="@product" selected="@(Model.Product == product)">@product</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="SortBy" class="form-select">
+            <option value="Name" selected="@(Model.SortBy == "Name")">Sort: Name</option>
+            <option value="Product" selected="@(Model.SortBy == "Product")">Sort: Product</option>
+            <option value="Owner" selected="@(Model.SortBy == "Owner")">Sort: Owner</option>
+            <option value="Status" selected="@(Model.SortBy == "Status")">Sort: Status</option>
+        </select>
+    </div>
+    <div class="col-md-1">
+        <select name="SortDirection" class="form-select">
+            <option value="asc" selected="@(Model.SortDirection == "asc")">Asc</option>
+            <option value="desc" selected="@(Model.SortDirection == "desc")">Desc</option>
+        </select>
+    </div>
+    <div class="col-md-1">
+        <select name="PageSize" class="form-select">
+            @foreach (var size in Model.PageSizeOptions)
+            {
+                <option value="@size" selected="@(Model.PageSize == size)">@size</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-1 d-flex gap-2">
+        <button type="submit" class="btn btn-outline-primary w-100">Go</button>
+        <a asp-page="/SubProjects/Index" class="btn btn-outline-secondary">Reset</a>
+    </div>
+</form>
+
+<div class="small text-muted mb-2">Showing @Model.SubProjects.Count of @Model.TotalCount subprojects</div>
+
+@if (!Model.SubProjects.Any())
+{
+    <div class="alert alert-info">No subprojects found.</div>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Product</th>
+                <th>Module Owner</th>
+                <th>Status</th>
+                @if (canEdit)
+                {
+                    <th></th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var subProject in Model.SubProjects)
+        {
+            <tr>
+                <td>@subProject.Name</td>
+                <td>@subProject.Product?.Name</td>
+                <td>@subProject.ModuleOwner</td>
+                <td>@subProject.Status</td>
+                @if (canEdit)
+                {
+                    <td class="text-nowrap">
+                        <a asp-page="/SubProjects/Edit" asp-route-id="@subProject.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-page="/SubProjects/Delete" asp-route-id="@subProject.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="SubProjects pagination">
+            <ul class="pagination">
+                <li class="page-item @(Model.Page <= 1 ? "disabled" : null)">
+                    <a class="page-link"
+                       asp-page="/SubProjects/Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-Status="@Model.Status"
+                       asp-route-Product="@Model.Product"
+                       asp-route-SortBy="@Model.SortBy"
+                       asp-route-SortDirection="@Model.SortDirection"
+                       asp-route-PageSize="@Model.PageSize"
+                       asp-route-Page="@(Model.Page - 1)">Previous</a>
+                </li>
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.Page ? "active" : null)">
+                        <a class="page-link"
+                           asp-page="/SubProjects/Index"
+                           asp-route-Search="@Model.Search"
+                           asp-route-Status="@Model.Status"
+                           asp-route-Product="@Model.Product"
+                           asp-route-SortBy="@Model.SortBy"
+                           asp-route-SortDirection="@Model.SortDirection"
+                           asp-route-PageSize="@Model.PageSize"
+                           asp-route-Page="@i">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : null)">
+                    <a class="page-link"
+                       asp-page="/SubProjects/Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-Status="@Model.Status"
+                       asp-route-Product="@Model.Product"
+                       asp-route-SortBy="@Model.SortBy"
+                       asp-route-SortDirection="@Model.SortDirection"
+                       asp-route-PageSize="@Model.PageSize"
+                       asp-route-Page="@(Model.Page + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
+    }
+}

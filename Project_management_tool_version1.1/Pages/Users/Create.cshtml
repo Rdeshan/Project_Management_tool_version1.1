@@ -1,0 +1,67 @@
+@page
+@model Project_management_tool_version1._1.Pages.Users.CreateModel
+@{
+    ViewData["Title"] = "Create User";
+}
+
+<h2 class="mb-3">Create User</h2>
+
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Input.FirstName" class="form-label"></label>
+                    <input asp-for="Input.FirstName" class="form-control" />
+                    <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Input.LastName" class="form-label"></label>
+                    <input asp-for="Input.LastName" class="form-control" />
+                    <span asp-validation-for="Input.LastName" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Email" class="form-label"></label>
+                <input asp-for="Input.Email" class="form-control" />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Password" class="form-label"></label>
+                <input asp-for="Input.Password" type="password" class="form-control" />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Status" class="form-label"></label>
+                <select asp-for="Input.Status" asp-items="Model.Statuses" class="form-select"></select>
+                <span asp-validation-for="Input.Status" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.RoleIds" class="form-label">Roles</label>
+                <select asp-for="Input.RoleIds" asp-items="Model.Roles" class="form-select" multiple size="6"></select>
+                <span asp-validation-for="Input.RoleIds" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.TeamIds" class="form-label">Teams</label>
+                <select asp-for="Input.TeamIds" asp-items="Model.Teams" class="form-select" multiple size="6"></select>
+                <span asp-validation-for="Input.TeamIds" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-page="/Users/Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,175 @@
+@page
+@model Project_management_tool_version1._1.Pages.Delays.IndexModel
+@{
+    ViewData["Title"] = "Delays Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Delays Dashboard</h2>
+    <div class="d-flex gap-2">
+        <a asp-page="/Delays/Index"
+           asp-page-handler="ExportCsv"
+           asp-route-Search="@Model.Search"
+           asp-route-DelayType="@Model.DelayType"
+           asp-route-FromDate="@Model.FromDate"
+           asp-route-ToDate="@Model.ToDate"
+           class="btn btn-outline-success">Export CSV</a>
+        <a asp-page="/Tickets/Index" class="btn btn-outline-secondary">Open Tickets</a>
+    </div>
+</div>
+
+<div class="row g-2 mb-3">
+    <div class="col-md-3">
+        <div class="card border-danger text-center">
+            <div class="card-body py-2">
+                <div class="small text-muted">Total Delayed</div>
+                <div class="h5 mb-0">@Model.TotalDelayedCount</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-danger-subtle text-center">
+            <div class="card-body py-2">
+                <div class="small text-muted">Overdue</div>
+                <div class="h5 mb-0">@Model.OverdueCount</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-warning text-center">
+            <div class="card-body py-2">
+                <div class="small text-muted">Not Started - Late</div>
+                <div class="h5 mb-0">@Model.NotStartedLateCount</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-info text-center">
+            <div class="card-body py-2">
+                <div class="small text-muted">Paused - Extended</div>
+                <div class="h5 mb-0">@Model.PausedExtendedCount</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-4">
+        <input name="Search" value="@Model.Search" class="form-control" placeholder="Search ticket #, title, project" />
+    </div>
+    <div class="col-md-2">
+        <select name="DelayType" class="form-select">
+            <option value="">All delay types</option>
+            @foreach (var type in Model.DelayTypes)
+            {
+                <option value="@type" selected="@(Model.DelayType == type)">@type</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <input asp-for="FromDate" type="date" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <input asp-for="ToDate" type="date" class="form-control" />
+    </div>
+    <div class="col-md-1">
+        <select name="PageSize" class="form-select">
+            @foreach (var size in Model.PageSizeOptions)
+            {
+                <option value="@size" selected="@(Model.PageSize == size)">@size</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-1 d-flex gap-2">
+        <button type="submit" class="btn btn-outline-primary w-100">Filter</button>
+        <a asp-page="/Delays/Index" class="btn btn-outline-secondary">Reset</a>
+    </div>
+</form>
+
+<div class="small text-muted mb-2">Showing @Model.DelayedTickets.Count of @Model.TotalCount delayed tickets</div>
+
+@if (!Model.DelayedTickets.Any())
+{
+    <div class="alert alert-success">No delayed tickets found for the current filter.</div>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Ticket #</th>
+                <th>Title</th>
+                <th>Project</th>
+                <th>Status</th>
+                <th>SubProject</th>
+                <th>Due Date</th>
+                <th>Revised Due</th>
+                <th>Delay Type</th>
+                <th>Days Delayed</th>
+                <th>Delay Reason</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.DelayedTickets)
+        {
+            <tr>
+                <td>@item.Ticket.TicketNumber</td>
+                <td>@item.Ticket.Title</td>
+                <td>@item.Ticket.Project?.Name</td>
+                <td>@item.Ticket.Status</td>
+                <td>@item.Ticket.SubProject?.Name</td>
+                <td>@item.Ticket.ExpectedDueDate</td>
+                <td>@item.Ticket.RevisedDueDate</td>
+                <td>@item.DelayType</td>
+                <td>@item.DaysDelayed</td>
+                <td>@(string.IsNullOrWhiteSpace(item.Ticket.DelayReason) ? "-" : item.Ticket.DelayReason)</td>
+                <td class="text-nowrap">
+                    <a asp-page="/Tickets/Edit" asp-route-id="@item.Ticket.Id" class="btn btn-sm btn-outline-primary">Open</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Delays pagination">
+            <ul class="pagination">
+                <li class="page-item @(Model.Page <= 1 ? "disabled" : null)">
+                    <a class="page-link"
+                       asp-page="/Delays/Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-DelayType="@Model.DelayType"
+                       asp-route-FromDate="@Model.FromDate"
+                       asp-route-ToDate="@Model.ToDate"
+                       asp-route-PageSize="@Model.PageSize"
+                       asp-route-Page="@(Model.Page - 1)">Previous</a>
+                </li>
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.Page ? "active" : null)">
+                        <a class="page-link"
+                           asp-page="/Delays/Index"
+                           asp-route-Search="@Model.Search"
+                           asp-route-DelayType="@Model.DelayType"
+                           asp-route-FromDate="@Model.FromDate"
+                           asp-route-ToDate="@Model.ToDate"
+                           asp-route-PageSize="@Model.PageSize"
+                           asp-route-Page="@i">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : null)">
+                    <a class="page-link"
+                       asp-page="/Delays/Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-DelayType="@Model.DelayType"
+                       asp-route-FromDate="@Model.FromDate"
+                       asp-route-ToDate="@Model.ToDate"
+                       asp-route-PageSize="@Model.PageSize"
+                       asp-route-Page="@(Model.Page + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
+    }
+}

@@ -1,0 +1,108 @@
+@page
+@model Project_management_tool_version1._1.Pages.Teams.IndexModel
+@{
+    ViewData["Title"] = "Teams";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Teams</h2>
+    <a asp-page="/Teams/Create" class="btn btn-primary">Create Team</a>
+</div>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-5">
+        <input name="Search" value="@Model.Search" class="form-control" placeholder="Search name or description" />
+    </div>
+    <div class="col-md-3">
+        <select name="SortBy" class="form-select">
+            <option value="Name" selected="@(Model.SortBy == "Name")">Sort: Name</option>
+            <option value="Description" selected="@(Model.SortBy == "Description")">Sort: Description</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="SortDirection" class="form-select">
+            <option value="asc" selected="@(Model.SortDirection == "asc")">Ascending</option>
+            <option value="desc" selected="@(Model.SortDirection == "desc")">Descending</option>
+        </select>
+    </div>
+    <div class="col-md-2 d-flex gap-2">
+        <select name="PageSize" class="form-select">
+            @foreach (var size in Model.PageSizeOptions)
+            {
+                <option value="@size" selected="@(Model.PageSize == size)">@size</option>
+            }
+        </select>
+        <button type="submit" class="btn btn-outline-primary">Go</button>
+        <a asp-page="/Teams/Index" class="btn btn-outline-secondary">Reset</a>
+    </div>
+</form>
+
+<div class="small text-muted mb-2">Showing @Model.Teams.Count of @Model.TotalCount teams</div>
+
+@if (!Model.Teams.Any())
+{
+    <div class="alert alert-info">No teams found.</div>
+}
+else
+{
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var team in Model.Teams)
+        {
+            <tr>
+                <td>@team.Name</td>
+                <td>@team.Description</td>
+                <td class="text-nowrap">
+                    <a asp-page="/Teams/Edit" asp-route-id="@team.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                    <a asp-page="/Teams/Delete" asp-route-id="@team.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Teams pagination">
+            <ul class="pagination">
+                <li class="page-item @(Model.Page <= 1 ? "disabled" : null)">
+                    <a class="page-link"
+                       asp-page="/Teams/Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-SortBy="@Model.SortBy"
+                       asp-route-SortDirection="@Model.SortDirection"
+                       asp-route-PageSize="@Model.PageSize"
+                       asp-route-Page="@(Model.Page - 1)">Previous</a>
+                </li>
+                @for (var i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.Page ? "active" : null)">
+                        <a class="page-link"
+                           asp-page="/Teams/Index"
+                           asp-route-Search="@Model.Search"
+                           asp-route-SortBy="@Model.SortBy"
+                           asp-route-SortDirection="@Model.SortDirection"
+                           asp-route-PageSize="@Model.PageSize"
+                           asp-route-Page="@i">@i</a>
+                    </li>
+                }
+                <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : null)">
+                    <a class="page-link"
+                       asp-page="/Teams/Index"
+                       asp-route-Search="@Model.Search"
+                       asp-route-SortBy="@Model.SortBy"
+                       asp-route-SortDirection="@Model.SortDirection"
+                       asp-route-PageSize="@Model.PageSize"
+                       asp-route-Page="@(Model.Page + 1)">Next</a>
+                </li>
+            </ul>
+        </nav>
+    }
+}

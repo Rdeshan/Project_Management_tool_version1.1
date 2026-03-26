@@ -1,0 +1,31 @@
+@page "{id:guid}"
+@model Project_management_tool_version1._1.Pages.Projects.DeleteModel
+@{
+    ViewData["Title"] = "Delete Project";
+}
+
+<h2 class="mb-3">Delete Project</h2>
+
+@if (Model.Project is null)
+{
+    <div class="alert alert-warning">Project not found.</div>
+}
+else
+{
+    <div class="alert alert-warning">
+        Are you sure you want to delete <strong>@Model.Project.Code - @Model.Project.Name</strong>?
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Client</dt>
+        <dd class="col-sm-9">@Model.Project.ClientName</dd>
+
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9">@Model.Project.Status</dd>
+    </dl>
+
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-page="/Projects/Index" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+}

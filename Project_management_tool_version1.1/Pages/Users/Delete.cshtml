@@ -1,0 +1,31 @@
+@page "{id:guid}"
+@model Project_management_tool_version1._1.Pages.Users.DeleteModel
+@{
+    ViewData["Title"] = "Delete User";
+}
+
+<h2 class="mb-3">Delete User</h2>
+
+@if (Model.User is null)
+{
+    <div class="alert alert-warning">User not found.</div>
+}
+else
+{
+    <div class="alert alert-warning">
+        Are you sure you want to delete <strong>@Model.User.FirstName @Model.User.LastName</strong>?
+    </div>
+
+    <dl class="row">
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.User.Email</dd>
+
+        <dt class="col-sm-3">Status</dt>
+        <dd class="col-sm-9">@Model.User.Status</dd>
+    </dl>
+
+    <form method="post">
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-page="/Users/Index" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+}

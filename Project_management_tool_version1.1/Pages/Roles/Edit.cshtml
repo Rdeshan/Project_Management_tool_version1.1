@@ -1,0 +1,38 @@
+@page "{id:guid}"
+@model Project_management_tool_version1._1.Pages.Roles.EditModel
+@{
+    ViewData["Title"] = "Edit Role";
+}
+
+<h2 class="mb-3">Edit Role</h2>
+
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        <form method="post">
+            <input asp-for="Input.Id" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Name" class="form-label"></label>
+                <input asp-for="Input.Name" class="form-control" />
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Description" class="form-label"></label>
+                <textarea asp-for="Input.Description" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Input.Description" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <a asp-page="/Roles/Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

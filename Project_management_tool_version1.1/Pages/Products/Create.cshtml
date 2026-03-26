@@ -1,0 +1,62 @@
+@page
+@model Project_management_tool_version1._1.Pages.Products.CreateModel
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<h2 class="mb-3">Create Product</h2>
+
+<div class="row">
+    <div class="col-md-8 col-lg-6">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Name" class="form-label"></label>
+                <input asp-for="Input.Name" class="form-control" />
+                <span asp-validation-for="Input.Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.VersionName" class="form-label"></label>
+                <input asp-for="Input.VersionName" class="form-control" />
+                <span asp-validation-for="Input.VersionName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.ProjectId" class="form-label">Project</label>
+                <select asp-for="Input.ProjectId" asp-items="Model.Projects" class="form-select">
+                    <option value="">-- select project --</option>
+                </select>
+                <span asp-validation-for="Input.ProjectId" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Status" class="form-label"></label>
+                <select asp-for="Input.Status" asp-items="Model.Statuses" class="form-select"></select>
+                <span asp-validation-for="Input.Status" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.PlannedReleaseDate" class="form-label"></label>
+                <input asp-for="Input.PlannedReleaseDate" class="form-control" />
+                <span asp-validation-for="Input.PlannedReleaseDate" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.Description" class="form-label"></label>
+                <textarea asp-for="Input.Description" rows="4" class="form-control"></textarea>
+                <span asp-validation-for="Input.Description" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a asp-page="/Products/Index" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
